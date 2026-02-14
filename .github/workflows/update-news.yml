@@ -75,7 +75,7 @@ jobs:
         if: steps.cpr.outputs.pull-request-operation == 'created'
         run: gh pr review --approve "${{ steps.cpr.outputs.pull-request-number }}"
         env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GH_TOKEN: ${{ secrets.APPROVAL_PAT_TOKEN }}
           
       - name: Enable PR auto-merge when only news.html changed
         if: steps.changes.outputs.only_news_html == 'true' && steps.cpr.outputs.pull-request-number != ''
