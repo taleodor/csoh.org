@@ -1,0 +1,11 @@
+.DS_Store
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv/
+
+# Google verification
+google*.html

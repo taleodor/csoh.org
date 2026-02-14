@@ -1,0 +1,157 @@
+# =============================================================================
+# CSOH Security Hardening - .htaccess  
+# Generated: 2026-02-11
+# Place this file in the root directory (your document root)
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# 1. SECURITY HEADERS
+# ---------------------------------------------------------------------------
+
+<IfModule mod_headers.c>
+    # Force HTTPS for all future visits (1 year)
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+    # Prevent MIME-type sniffing
+    Header always set X-Content-Type-Options "nosniff"
+
+    # Block clickjacking - prevent your site from being embedded in iframes
+    Header always set X-Frame-Options "DENY"
+
+    # Control referrer information sent to external sites
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Restrict browser features you don't use
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
+
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://csoh.org https://img.youtube.com https://i.ytimg.com https://media.wired.com https://archive.org data:; font-src 'self'; connect-src 'self'; frame-src https://www.youtube.com https://web.archive.org https://www.wired.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+
+    # Prevent browsers from caching sensitive pages
+    # (Optional: remove if you want caching for performance)
+    # Header always set Cache-Control "no-store, no-cache, must-revalidate"
+
+    # Remove server version disclosure
+    Header always unset X-Powered-By
+    Header always unset Server
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# 2. SUPPRESS SERVER SIGNATURE
+# ---------------------------------------------------------------------------
+
+ServerSignature Off
+
+# ---------------------------------------------------------------------------
+# 3. BLOCK ACCESS TO SENSITIVE FILES AND DIRECTORIES
+# ---------------------------------------------------------------------------
+
+# Block .git directory
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^\.git(/.*)?$ - [F,L]
+    RewriteRule ^\.claude(/.*)?$ - [F,L]
+</IfModule>
+
+# Block hidden files and directories (anything starting with .)
+<FilesMatch "^\.">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Block Python scripts, data files, and internal docs from direct access
+<FilesMatch "\.(py|pyc|md|json)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# EXCEPTION: Allow specific JSON files that the site JS needs to load
+# (preview-mapping.json is loaded by main.js for card previews)
+# (resources-data.json contains the resource data)
+# If main.js fetches these via JS, they need to be accessible.
+# Comment these out if they're bundled into the JS or not needed:
+<Files "preview-mapping.json">
+    <IfModule mod_authz_core.c>
+        Require all granted
+    </IfModule>
+</Files>
+
+<Files "resources-data.json">
+    <IfModule mod_authz_core.c>
+        Require all granted
+    </IfModule>
+</Files>
+
+# Block common backup/config files
+<FilesMatch "(^#.*#|\.(bak|config|dist|fla|inc|ini|log|psd|sh|sql|sw[op])|~)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# ---------------------------------------------------------------------------
+# 4. FIX REDIRECT CHAIN (single redirect to canonical URL)
+# ---------------------------------------------------------------------------
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Force HTTPS (if not already handled by hosting provider)
+    RewriteCond %{HTTPS} off
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# 5. STATIC ASSET CACHING
+# ---------------------------------------------------------------------------
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+
+    # HTML - short cache, revalidate often
+    ExpiresByType text/html "access plus 1 hour"
+
+    # CSS and JS - long cache (use cache-busting filenames when updating)
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType text/javascript "access plus 1 year"
+
+    # Images - long cache
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# 6. DISABLE DIRECTORY LISTING
+# ---------------------------------------------------------------------------
+
+Options -Indexes
+
+# ---------------------------------------------------------------------------
+# 7. CUSTOM ERROR PAGES (optional - create these files if desired)
+# ---------------------------------------------------------------------------
+
+ErrorDocument 403 /403.html
+ErrorDocument 404 /404.html
+
+# Redirect old /csoh/ paths to root
+RewriteEngine On
+RewriteRule ^csoh/(.*)$ /$1 [R=301,L]
+RewriteRule ^csoh/?$ / [R=301,L]

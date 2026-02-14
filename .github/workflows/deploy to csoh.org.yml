@@ -1,0 +1,42 @@
+name: Deploy site to FTP
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Recalculate SRI hashes
+        run: python3 update_sri.py
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          protocol: ftps
+          local-dir: ./        # repo root or build output
+          server-dir: /public_html/        # remote root
+          exclude: |
+            .git*
+            .github/**
+            .venv/**
+            __pycache__/**
+            tools/
+            *.py
+            *.sh
+            *.pyc
+            *.pyo
+            README.md
+            CONTRIBUTING.md
+            CONTRIBUTING_RESOURCES.md
+            UPDATE_NEWS_README.md
+            UPDATE_SRI_README.md
+            LICENSE
+            .DS_Store
