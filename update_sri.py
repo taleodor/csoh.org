@@ -27,6 +27,12 @@ def upsert_attr(tag: str, attr: str, value: str) -> str:
     return f'{tag[:insert_at]} {attr}="{value}"{tag[insert_at:]}'
 
 
+def remove_attr(tag: str, attr: str) -> str:
+    """Remove an HTML attribute from a single tag string."""
+    attr_pattern = re.compile(rf'\s{re.escape(attr)}\s*=\s*(["\']).*?\1', re.IGNORECASE)
+    return attr_pattern.sub('', tag)
+
+
 def calculate_sri_hash(file_path: Path) -> str:
     """Calculate SHA-384 SRI hash for a file.
     
@@ -70,7 +76,7 @@ def update_html_file(html_path: Path, hashes: Dict[str, str]) -> bool:
         def replace_style_link(match: re.Match) -> str:
             tag = match.group(0)
             tag = upsert_attr(tag, 'integrity', hashes['style.css'])
-            tag = upsert_attr(tag, 'crossorigin', 'anonymous')
+            tag = remove_attr(tag, 'crossorigin')
             return tag
 
         content = link_pattern.sub(replace_style_link, content)
@@ -85,7 +91,7 @@ def update_html_file(html_path: Path, hashes: Dict[str, str]) -> bool:
         def replace_main_script(match: re.Match) -> str:
             tag = match.group(0)
             tag = upsert_attr(tag, 'integrity', hashes['main.js'])
-            tag = upsert_attr(tag, 'crossorigin', 'anonymous')
+            tag = remove_attr(tag, 'crossorigin')
             return tag
 
         content = script_pattern.sub(replace_main_script, content)
