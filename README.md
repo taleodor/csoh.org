@@ -121,6 +121,7 @@ Archive of past Zoom session presentations:
 - **Automated URL Safety Checks** - All URLs validated for phishing, malware, and suspicious patterns
 - **CI/CD Security Validation** - GitHub Actions workflow blocks unsafe URLs before merge
 - **1,000+ URLs Validated** - Comprehensive site-wide security scanning
+- **Automated Preview Images** - Screenshots generated when new resources are added
 - **CDN Ready** - Deploy anywhere (GitHub Pages, Vercel, AWS S3, etc.)
 - **100% Uptime** - Simple file hosting = maximum reliability
 
@@ -174,11 +175,13 @@ csoh.org/
 │
 ├── tools/                      # Automation and maintenance scripts
 │   ├── submit_resource.py            # Interactive tool for submitting new resources
+│   ├── generate_preview.py           # Generate preview screenshots for resources
 │   ├── check_url_safety.py           # Core URL safety validator with pattern matching
 │   ├── check_existing_urls.py        # Batch scanner for chat-resources.html URLs
 │   ├── check_all_site_urls.py        # Comprehensive site-wide URL scanner
 │   ├── update_chat_titles.py         # Generate descriptive titles for chat URLs
 │   ├── SUBMIT_RESOURCE_README.md     # Interactive submission tool documentation
+│   ├── GENERATE_PREVIEW_README.md    # Preview image generation documentation
 │   ├── CHECK_URL_SAFETY_README.md    # URL safety checker documentation
 │   └── CHECK_URL_SAFETY_WORKFLOW.md  # GitHub Actions workflow documentation
 │
@@ -192,6 +195,7 @@ csoh.org/
 │   ├── update-news.yml         # Automated news updates (every 12 hours)
 │   ├── update-sri.yml          # Automated SRI hash updates (on CSS/JS changes)
 │   ├── check-url-safety.yml    # Automated URL safety validation (on HTML changes)
+│   ├── generate-previews.yml   # Automated preview image generation (on resources changes)
 │   └── deploy to csoh.org.yml  # Automated FTP deployment (on push to main)
 │
 ├── resources-data.json         # Data export of all resources (for integrations)
@@ -227,6 +231,8 @@ csoh.org/
 </a>
 ```
 
+**Preview images:** If you do not have a preview image, the workflow will automatically capture a screenshot and update `preview-mapping.json` after you open a PR.
+
 4. **Commit and push** to update the live site
 
 ### Adding a New Article to News
@@ -257,7 +263,7 @@ Edit the "Resource Categories" section in `index.html` to:
 
 ## 🤖 How Automation Works
 
-This site uses four **GitHub Actions workflows** that handle routine tasks automatically. GitHub Actions is a free automation service built into GitHub — think of it as a robot that runs scripts for you whenever certain things happen in the repo.
+This site uses five **GitHub Actions workflows** that handle routine tasks automatically. GitHub Actions is a free automation service built into GitHub — think of it as a robot that runs scripts for you whenever certain things happen in the repo.
 
 ### 1. News Auto-Updates (every 12 hours)
 
@@ -292,7 +298,15 @@ If any **unsafe URLs** are detected, the workflow **fails and blocks the merge**
 
 **Full docs:** [tools/CHECK_URL_SAFETY_README.md](tools/CHECK_URL_SAFETY_README.md) and [.github/workflows/CHECK_URL_SAFETY_WORKFLOW.md](.github/workflows/CHECK_URL_SAFETY_WORKFLOW.md)
 
-### 4. Auto-Deploy to Web Server (on push to main)
+### 4. Preview Image Generation (on resources changes)
+
+**What it does:** Ensures every resource has a high-quality preview image.
+
+**How it works:** When `resources.html` changes, a script (`generate_preview.py`) checks for missing or low-quality previews and captures screenshots. It updates `preview-mapping.json`, optimizes images, and commits them back to the PR or main branch.
+
+**Full docs:** [tools/GENERATE_PREVIEW_README.md](tools/GENERATE_PREVIEW_README.md)
+
+### 5. Auto-Deploy to Web Server (on push to main)
 
 **What it does:** Uploads the latest site files to the web server whenever changes land on the `main` branch.
 
@@ -300,7 +314,7 @@ If any **unsafe URLs** are detected, the workflow **fails and blocks the merge**
 
 ### Setup Note
 
-All three workflows use a **Personal Access Token (PAT)** stored as a GitHub repo secret called `PAT_TOKEN` (because the GitHub organization restricts the default token). If workflows start failing with permission errors, the PAT may need to be rotated — see the setup instructions in [UPDATE_NEWS_README.md](UPDATE_NEWS_README.md#setup-requirements).
+All workflows use a **Personal Access Token (PAT)** stored as a GitHub repo secret called `PAT_TOKEN` (because the GitHub organization restricts the default token). If workflows start failing with permission errors, the PAT may need to be rotated — see the setup instructions in [UPDATE_NEWS_README.md](UPDATE_NEWS_README.md#setup-requirements).
 
 ---
 
