@@ -16,7 +16,7 @@ Cloud Security Office Hours is a **vendor-neutral, free community** dedicated to
 - **260+ Curated Resources** - CTF challenges, hands-on labs, security tools, certifications
 - **120+ News Articles** - Daily cloud security news from reputable sources
 - **Active Discord Community** - Real-time discussions, peer learning, mentorship
-- **No Vendor Lock-in** - Completely free, open, community-run initiative
+- **Vender Neutral** - Completely free, open, community-run initiative
 
 ---
 
