@@ -23,6 +23,19 @@ Welcome! This guide covers **any change you want to suggest** to the CSOH websit
 
 **Time needed:** 5-20 minutes depending on complexity
 
+### 🚀 Quick Option: Interactive Tools
+
+For **adding resources**, we have an automated Python script:
+
+```bash
+python3 tools/submit_resource.py
+```
+
+This handles validation, HTML generation, git operations, and PR creation automatically.
+**[See documentation →](tools/SUBMIT_RESOURCE_README.md)**
+
+For other contributions, continue reading the guide below.
+
 ---
 
 ## 🎯 Types of Contributions

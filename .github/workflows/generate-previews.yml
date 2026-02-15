@@ -1,0 +1,143 @@
+name: Generate Preview Images
+
+on:
+  pull_request:
+    paths:
+      - 'resources.html'
+  push:
+    branches:
+      - main
+    paths:
+      - 'resources.html'
+  workflow_dispatch:
+
+jobs:
+  generate-previews:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better context
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install playwright Pillow
+          playwright install chromium
+
+      - name: Check for missing previews
+        id: check
+        run: |
+          python3 tools/generate_preview.py --check > preview-check.txt || true
+          
+          if grep -q "resources without previews" preview-check.txt; then
+            echo "missing=true" >> $GITHUB_OUTPUT
+            echo "Found resources without previews"
+          else
+            echo "missing=false" >> $GITHUB_OUTPUT
+            echo "All resources have previews"
+          fi
+          
+          cat preview-check.txt
+
+      - name: Generate missing previews
+        if: steps.check.outputs.missing == 'true'
+        run: |
+          python3 tools/generate_preview.py --batch-auto
+
+      - name: Optimize images
+        if: steps.check.outputs.missing == 'true'
+        run: |
+          # Install image optimization tools
+          sudo apt-get update
+          sudo apt-get install -y jpegoptim
+          
+          # Optimize all preview images
+          find img/previews -name "*.jpg" -exec jpegoptim --strip-all --max=85 {} \;
+
+      - name: Check for changes
+        id: changes
+        if: steps.check.outputs.missing == 'true'
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "Changes detected in preview images"
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No changes to commit"
+          fi
+
+      - name: Commit and push changes
+        if: steps.changes.outputs.has_changes == 'true' && github.event_name == 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add img/previews/*.jpg
+          git add preview-mapping.json
+          
+          git commit -m "Auto-generate preview images for new resources"
+          git push
+
+      - name: Commit to PR branch
+        if: steps.changes.outputs.has_changes == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add img/previews/*.jpg
+          git add preview-mapping.json
+          
+          git commit -m "Auto-generate preview images for new resources"
+          
+          # Push to the PR branch
+          git push origin HEAD:${{ github.head_ref }}
+
+      - name: Comment on PR with preview info
+        if: steps.changes.outputs.has_changes == 'true' && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let checkOutput = '';
+            try {
+              checkOutput = fs.readFileSync('preview-check.txt', 'utf8');
+            } catch (e) {
+              checkOutput = 'Preview generation completed';
+            }
+            
+            // Extract number of previews generated
+            const match = checkOutput.match(/(\d+) resources without previews/);
+            const count = match ? match[1] : '?';
+            
+            let comment = `## Preview Images Generated\n\n`;
+            comment += `Generated **${count} preview image(s)** for the new resource(s).\n\n`;
+            comment += `### What was done:\n`;
+            comment += `- Captured screenshots of new resource URLs\n`;
+            comment += `- Optimized images (400x300, <150KB)\n`;
+            comment += `- Updated \`preview-mapping.json\`\n`;
+            comment += `- Saved to \`img/previews/\`\n\n`;
+            comment += `The preview images are now part of this PR and will be included when merged.`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+      - name: Upload preview images as artifacts
+        if: steps.check.outputs.missing == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-previews
+          path: |
+            img/previews/*.jpg
+            preview-mapping.json
+          retention-days: 30

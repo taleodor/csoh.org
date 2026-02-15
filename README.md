@@ -173,10 +173,12 @@ csoh.org/
 │   └── previews/               # Resource preview images
 │
 ├── tools/                      # Automation and maintenance scripts
+│   ├── submit_resource.py            # Interactive tool for submitting new resources
 │   ├── check_url_safety.py           # Core URL safety validator with pattern matching
 │   ├── check_existing_urls.py        # Batch scanner for chat-resources.html URLs
 │   ├── check_all_site_urls.py        # Comprehensive site-wide URL scanner
 │   ├── update_chat_titles.py         # Generate descriptive titles for chat URLs
+│   ├── SUBMIT_RESOURCE_README.md     # Interactive submission tool documentation
 │   ├── CHECK_URL_SAFETY_README.md    # URL safety checker documentation
 │   └── CHECK_URL_SAFETY_WORKFLOW.md  # GitHub Actions workflow documentation
 │
@@ -318,6 +320,7 @@ Want to help improve CSOH? We have **beginner-friendly guides** for contributing
 
 ### 📚 Contribution Guides
 
+- **[Interactive Resource Submission Tool](tools/SUBMIT_RESOURCE_README.md)** - Automated Python script with URL validation and PR creation
 - **[How to Add a Resource](contribute-resources.html)** - Step-by-step guide for adding cloud security resources (tools, labs, certifications, etc.)
 - **[General Contributions](contribute.html)** - Guide for all other contributions:
   - Adding news sources for our daily news automation
@@ -332,6 +335,7 @@ Want to help improve CSOH? We have **beginner-friendly guides** for contributing
 1. [Report an issue](https://github.com/CloudSecurityOfficeHours/csoh.org/issues) - Found a bug? Have a suggestion?
 2. [Join Discord](https://discord.gg/AVzAY97D8E) - Discuss ideas with the community
 3. [Add a resource](contribute-resources.html) - Use our web-based guide (copy/paste method)
+4. [Use the submission tool](tools/SUBMIT_RESOURCE_README.md) - Interactive Python script (automated)
 
 **For developers:**
 1. Fork the repository

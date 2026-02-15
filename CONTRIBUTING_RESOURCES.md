@@ -19,6 +19,25 @@ Welcome! This guide will walk you through **adding a new resource** to our commu
 
 **Time needed:** ~10-15 minutes for your first contribution
 
+### 🚀 Quick Option: Interactive Submission Tool
+
+We have an **automated Python script** that handles everything for you:
+
+```bash
+python3 tools/submit_resource.py
+```
+
+This interactive tool:
+- ✅ Prompts you for all required information
+- ✅ Validates URLs automatically
+- ✅ Generates proper HTML
+- ✅ Creates git branch and commits
+- ✅ Provides PR creation instructions
+
+**[See full documentation →](tools/SUBMIT_RESOURCE_README.md)**
+
+If you prefer the manual web-based method, continue reading below!
+
 ---
 
 ## 📖 What is a Resource?
