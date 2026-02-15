@@ -95,20 +95,13 @@ def main():
         title = None
         try:
             title = fetch_title(href)
-        except Exception:
+            if title:
+                print(f"✓ Fetched: {href[:60]}... → {title[:80]}")
+            else:
+                print(f"✗ Failed to fetch: {href[:60]}...")
+        except Exception as e:
+            print(f"✗ Error fetching {href[:60]}...: {e}")
             title = None
         if not title:
             title = title_from_url(href)
-        changes += 1
-        return prefix + title + suffix
-
-    new_html = pattern.sub(repl, html_doc)
-
-    with open(INPUT, 'w', encoding='utf-8') as f:
-        f.write(new_html)
-
-    print(f"Updated {changes} titles in {INPUT}, backup saved to {BACKUP}")
-
-
-if __name__ == '__main__':
-    main()
+            print(f"  Fallback: {title[:80]}")
