@@ -109,6 +109,7 @@
                 <li><a href="#content">Improving content</a></li>
                 <li><a href="#reorganize">Reorganizing resources</a></li>
                 <li><a href="#issues">Reporting issues</a></li>
+                <li><a href="#workflows">Automated workflows</a></li>
                 <li><a href="#pull-request">Creating pull requests</a></li>
                 <li><a href="#faq">FAQ</a></li>
             </ol>
@@ -381,6 +382,25 @@
 
             <div class="highlight-box">
                 <strong>That's it!</strong> Maintainers will discuss your issue and take action.
+            </div>
+        </section>
+
+        <section id="workflows">
+            <h2>🤖 Automated Workflows (What Happens After You Submit)</h2>
+            <p>We use automated checks to keep the site safe and consistent. You do not need to run these manually.</p>
+
+            <ul>
+                <li><strong>URL Safety Check:</strong> Scans all HTML files for unsafe links and blocks risky URLs.</li>
+                <li><strong>Preview Image Generation:</strong> Captures screenshots for new resources and updates
+                    <code>preview-mapping.json</code>.</li>
+                <li><strong>SRI Hash & Cache-Bust:</strong> Recalculates integrity hashes when CSS/JS changes.</li>
+                <li><strong>News Auto-Updates:</strong> Pulls new articles every 12 hours and opens a PR.</li>
+                <li><strong>Auto-Deploy:</strong> Pushes the site to the server when changes land on main.</li>
+            </ul>
+
+            <div class="highlight-box">
+                <strong>Note:</strong> If your PR comes from a fork, preview images are generated but may not be pushed
+                back automatically. Maintainers can apply them or you can run the preview script locally.
             </div>
         </section>
 
