@@ -25,6 +25,15 @@ jobs:
           python-version: '3.x'
       - name: Recalculate SRI hashes
         run: python3 update_sri.py
+      - name: Ensure remote tools directory exists
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lftp
+          lftp -e "set ssl:verify-certificate no; set ftp:ssl-force true; set ftp:ssl-protect-data true; open -u ${FTP_USER},${FTP_PASS} ${FTP_HOST}; mkdir -p /public_html/tools; bye"
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASS }}
       - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
@@ -39,8 +48,6 @@ jobs:
             .github/**
             .venv/**
             __pycache__/**
-            tools/**
-            *.py
             *.sh
             *.pyc
             *.pyo
