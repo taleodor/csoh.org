@@ -522,6 +522,11 @@ nav a:focus {
     font-size: 1.25rem;
     margin: 0 0 0.75rem 0;
     color: var(--primary-color);
+    /* Better word wrapping for long URLs */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: none;
 }
 
 .resource-card h3 a {
