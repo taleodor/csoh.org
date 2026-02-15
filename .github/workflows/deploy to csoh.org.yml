@@ -39,7 +39,7 @@ jobs:
             .github/**
             .venv/**
             __pycache__/**
-            tools/
+            tools/**
             *.py
             *.sh
             *.pyc
