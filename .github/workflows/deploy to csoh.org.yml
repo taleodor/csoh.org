@@ -25,11 +25,36 @@ jobs:
           python-version: '3.x'
       - name: Recalculate SRI hashes
         run: python3 update_sri.py
-      - name: Ensure remote tools directory exists
+      - name: Ensure remote directories exist
         run: |
           sudo apt-get update
           sudo apt-get install -y lftp
-          lftp -e "set ssl:verify-certificate no; set ftp:ssl-force true; set ftp:ssl-protect-data true; open -u ${FTP_USER},${FTP_PASS} ${FTP_HOST}; mkdir /public_html/tools; bye" || echo "tools directory already exists (or mkdir returned non-fatal error); continuing"
+
+          ensure_remote_dir() {
+            local remote_dir="$1"
+
+            set +e
+            LFTP_OUT=$(lftp -e "set ssl:verify-certificate no; set ftp:ssl-force true; set ftp:ssl-protect-data true; open -u ${FTP_USER},${FTP_PASS} ${FTP_HOST}; mkdir ${remote_dir}; bye" 2>&1)
+            LFTP_STATUS=$?
+            set -e
+
+            echo "$LFTP_OUT"
+
+            if [ $LFTP_STATUS -ne 0 ]; then
+              if echo "$LFTP_OUT" | grep -qi "file exists"; then
+                echo "${remote_dir} already exists; continuing"
+              else
+                echo "Failed to ensure ${remote_dir} exists"
+                exit $LFTP_STATUS
+              fi
+            fi
+          }
+
+          ensure_remote_dir "/public_html/tools"
+          ensure_remote_dir "/public_html/.well-known"
+          ensure_remote_dir "/public_html/img"
+          ensure_remote_dir "/public_html/img/previews"
+          ensure_remote_dir "/public_html/chat-screenshots"
         env:
           FTP_HOST: ${{ secrets.FTP_HOST }}
           FTP_USER: ${{ secrets.FTP_USER }}
