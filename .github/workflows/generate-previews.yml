@@ -11,6 +11,10 @@ on:
       - 'resources.html'
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   generate-previews:
     runs-on: ubuntu-latest
