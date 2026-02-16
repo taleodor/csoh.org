@@ -6291,7 +6291,18 @@
                 const cardDate = cardEl.dataset.date;
 
                 const matchesSearch = !query || text.includes(query);
-                const matchesFilter = !activeFilter || cat === activeFilter || person === activeFilter;
+                let matchesFilter = !activeFilter;
+                
+                if (activeFilter) {
+                    if (activeFilter.startsWith('person-')) {
+                        // This is a person filter
+                        matchesFilter = person === activeFilter;
+                    } else {
+                        // This is a category filter
+                        matchesFilter = cat === activeFilter;
+                    }
+                }
+                
                 const matchesDate = checkDateFilter(cardDate);
 
                 card.style.display = (matchesSearch && matchesFilter && matchesDate) ? '' : 'none';
