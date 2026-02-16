@@ -25,6 +25,16 @@ jobs:
           python-version: '3.x'
       - name: Recalculate SRI hashes
         run: python3 update_sri.py
+      - name: Restore file timestamps from git history
+        run: |
+          echo "Restoring file modification times from git log..."
+          git ls-files -z | while IFS= read -r -d '' file; do
+            ts=$(git log -1 --format='%ci' -- "$file" 2>/dev/null)
+            if [ -n "$ts" ] && [ -f "$file" ]; then
+              touch -d "$ts" "$file"
+            fi
+          done
+          echo "Timestamps restored. Files modified by previous steps (e.g. SRI recalculation) retain current timestamps."
       - name: Ensure remote directories exist
         run: |
           sudo apt-get update
@@ -67,7 +77,7 @@ jobs:
           FTP_PASS: ${{ secrets.FTP_PASS }}
       - name: FTP Deploy
         run: |
-          lftp -e "set ssl:verify-certificate no; set ftp:ssl-force true; set ftp:ssl-protect-data true; open -u ${FTP_USER},${FTP_PASS} ${FTP_HOST}; mirror -R ./ /public_html/ --verbose=2 --parallel=2 --exclude-glob .git* --exclude-glob .github/ --exclude-glob .venv/ --exclude-glob __pycache__/ --exclude-glob *.sh --exclude-glob *.pyc --exclude-glob *.pyo --exclude-glob README.md --exclude-glob CONTRIBUTING.md --exclude-glob CONTRIBUTING_RESOURCES.md --exclude-glob UPDATE_NEWS_README.md --exclude-glob UPDATE_SRI_README.md --exclude-glob LICENSE --exclude-glob .DS_Store; bye"
+          lftp -e "set ssl:verify-certificate no; set ftp:ssl-force true; set ftp:ssl-protect-data true; open -u ${FTP_USER},${FTP_PASS} ${FTP_HOST}; mirror -R ./ /public_html/ --only-newer --verbose=2 --parallel=2 --exclude-glob .git* --exclude-glob .github/ --exclude-glob .venv/ --exclude-glob __pycache__/ --exclude-glob *.sh --exclude-glob *.pyc --exclude-glob *.pyo --exclude-glob README.md --exclude-glob CONTRIBUTING.md --exclude-glob CONTRIBUTING_RESOURCES.md --exclude-glob UPDATE_NEWS_README.md --exclude-glob UPDATE_SRI_README.md --exclude-glob LICENSE --exclude-glob .DS_Store; bye"
         env:
           FTP_HOST: ${{ secrets.FTP_HOST }}
           FTP_USER: ${{ secrets.FTP_USER }}
