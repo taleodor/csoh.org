@@ -2025,8 +2025,8 @@ footer {
     }
 
     :root:not([data-theme]) .hero {
-        background: linear-gradient(135deg, #0b1018 0%, #142a45 100%);
-        color: #f5f7fa;
+        background: linear-gradient(135deg, #0e1825 0%, #163050 100%);
+        color: #ffffff;
     }
 
     :root:not([data-theme]) .hero h2 {
@@ -2034,7 +2034,7 @@ footer {
     }
 
     :root:not([data-theme]) .hero p {
-        color: #dce4ee;
+        color: #f0f4f8;
         opacity: 1;
     }
 
@@ -2213,8 +2213,8 @@ footer {
 }
 
 [data-theme="dark"] .hero {
-    background: linear-gradient(135deg, #0b1018 0%, #142a45 100%);
-    color: #f5f7fa;
+    background: linear-gradient(135deg, #0e1825 0%, #163050 100%);
+    color: #ffffff;
 }
 
 [data-theme="dark"] .hero h2 {
@@ -2222,7 +2222,7 @@ footer {
 }
 
 [data-theme="dark"] .hero p {
-    color: #dce4ee;
+    color: #f0f4f8;
     opacity: 1;
 }
 
