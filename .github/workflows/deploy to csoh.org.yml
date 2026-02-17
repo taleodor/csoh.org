@@ -87,7 +87,9 @@ jobs:
             should_exclude "$f" && continue
             [ ! -f "$f" ] && continue
             dir=$(dirname "/public_html/$f")
-            echo "mkdir -p $dir"      >> "$SCRIPT"
+            if [ "$dir" != "/public_html" ]; then
+              echo "mkdir -p $dir"    >> "$SCRIPT"
+            fi
             echo "put -O $dir -- $f"  >> "$SCRIPT"
             UPLOAD_COUNT=$((UPLOAD_COUNT + 1))
             echo "  upload: $f"
