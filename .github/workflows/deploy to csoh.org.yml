@@ -68,7 +68,19 @@ jobs:
           }
 
           # Files changed in the latest commit (added/copied/modified/renamed)
-          COMMITTED=$(git diff --no-renames --name-only --diff-filter=ACMR HEAD~1 HEAD 2>/dev/null || echo "")
+          # For merge commits, diff against ALL parents to catch every changed file
+          PARENT_COUNT=$(git cat-file -p HEAD | grep -c '^parent ' || echo "1")
+          if [ "$PARENT_COUNT" -gt 1 ]; then
+            # Merge commit: collect changes from each parent
+            COMMITTED=""
+            for parent in $(git rev-parse HEAD^@); do
+              COMMITTED=$(printf '%s\n%s' "$COMMITTED" \
+                "$(git diff --no-renames --name-only --diff-filter=ACMR "$parent" HEAD 2>/dev/null || echo "")")
+            done
+            COMMITTED=$(echo "$COMMITTED" | sort -u | sed '/^$/d')
+          else
+            COMMITTED=$(git diff --no-renames --name-only --diff-filter=ACMR HEAD~1 HEAD 2>/dev/null || echo "")
+          fi
           # Files changed by update_sri.py (uncommitted working-tree changes)
           WORKING=$(git diff --no-renames --name-only 2>/dev/null || echo "")
           # Files deleted in the latest commit
