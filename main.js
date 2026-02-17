@@ -710,6 +710,7 @@ function initShareButtons() {
         container.innerHTML =
             `<a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}" class="share-btn share-btn--linkedin" target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn" title="Share on LinkedIn">in</a>` +
             `<a href="https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}" class="share-btn share-btn--twitter" target="_blank" rel="noopener noreferrer" aria-label="Share on X" title="Share on X">X</a>` +
+            `<a href="https://bsky.app/intent/compose?text=${encodedTitle}%20${encodedUrl}" class="share-btn share-btn--bluesky" target="_blank" rel="noopener noreferrer" aria-label="Share on Bluesky" title="Share on Bluesky">🦋</a>` +
             `<a href="https://www.reddit.com/submit?url=${encodedUrl}&title=${encodedTitle}" class="share-btn share-btn--reddit" target="_blank" rel="noopener noreferrer" aria-label="Share on Reddit" title="Share on Reddit">r/</a>`;
 
         // Prevent share button clicks from navigating the parent card-link
