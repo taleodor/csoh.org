@@ -2011,16 +2011,35 @@ footer {
 
     :root:not([data-theme]) header {
         background-color: #0b1018;
-        color: #f0f3f7;
+        color: #f5f7fa;
+    }
+
+    :root:not([data-theme]) .logo h1,
+    :root:not([data-theme]) .logo p,
+    :root:not([data-theme]) .logo-link {
+        color: #f5f7fa;
     }
 
     :root:not([data-theme]) nav a {
-        color: #f0f3f7;
+        color: #f5f7fa;
     }
 
     :root:not([data-theme]) .hero {
         background: linear-gradient(135deg, #0b1018 0%, #142a45 100%);
-        color: #f0f3f7;
+        color: #f5f7fa;
+    }
+
+    :root:not([data-theme]) .hero h2 {
+        color: #ffffff;
+    }
+
+    :root:not([data-theme]) .hero p {
+        color: #dce4ee;
+        opacity: 1;
+    }
+
+    :root:not([data-theme]) .btn-primary {
+        color: #ffffff;
     }
 
     :root:not([data-theme]) footer {
@@ -2180,16 +2199,22 @@ footer {
 /* --- Dark mode: hero & footer -------------------------------------------- */
 [data-theme="dark"] header {
     background-color: #0b1018;
-    color: #f0f3f7;
+    color: #f5f7fa;
+}
+
+[data-theme="dark"] .logo h1,
+[data-theme="dark"] .logo p,
+[data-theme="dark"] .logo-link {
+    color: #f5f7fa;
 }
 
 [data-theme="dark"] nav a {
-    color: #f0f3f7;
+    color: #f5f7fa;
 }
 
 [data-theme="dark"] .hero {
     background: linear-gradient(135deg, #0b1018 0%, #142a45 100%);
-    color: #f0f3f7;
+    color: #f5f7fa;
 }
 
 [data-theme="dark"] .hero h2 {
@@ -2197,7 +2222,17 @@ footer {
 }
 
 [data-theme="dark"] .hero p {
-    color: #d8e0ea;
+    color: #dce4ee;
+    opacity: 1;
+}
+
+[data-theme="dark"] .btn-primary {
+    background-color: var(--accent-color);
+    color: #ffffff;
+}
+
+[data-theme="dark"] .btn-primary:hover {
+    background-color: #e05545;
 }
 
 [data-theme="dark"] footer {
