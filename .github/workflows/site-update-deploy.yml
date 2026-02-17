@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - 'resources.html'
+      - 'chat-resources.html'
+      - 'chat-screenshots/**'
       - 'style.css'
       - 'main.js'
       - 'chat-resources.js'
@@ -96,10 +98,21 @@ jobs:
             git push
           fi
 
+      - name: Check for new chat-screenshots
+        id: check_chat_screenshots
+        run: |
+          if git diff --name-only HEAD~1 HEAD -- 'chat-screenshots/' | grep -q .; then
+            echo "new=true" >> $GITHUB_OUTPUT
+            echo "New chat-screenshots detected"
+          else
+            echo "new=false" >> $GITHUB_OUTPUT
+            echo "No new chat-screenshots"
+          fi
+
       - name: Check if deploy is needed
         id: deploy_needed
         run: |
-          if [[ "${{ steps.sri.outputs.changed }}" == "true" || "${{ steps.check_previews.outputs.missing }}" == "true" || "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          if [[ "${{ steps.sri.outputs.changed }}" == "true" || "${{ steps.check_previews.outputs.missing }}" == "true" || "${{ steps.check_chat_screenshots.outputs.new }}" == "true" || "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "deploy=true" >> $GITHUB_OUTPUT
           else
             echo "deploy=false" >> $GITHUB_OUTPUT
@@ -126,12 +139,20 @@ jobs:
             --exclude-glob CONTRIBUTING_RESOURCES.md --exclude-glob UPDATE_NEWS_README.md \
             --exclude-glob UPDATE_SRI_README.md --exclude-glob LICENSE \
             --exclude-glob .DS_Store --exclude img/; bye"
-          # Pass 2: only sync img/ when new previews were generated this run
+          # Pass 2: only sync img/previews/ when new previews were generated this run
           if [[ "${{ steps.check_previews.outputs.missing }}" == "true" ]]; then
             echo "==> Syncing new preview images..."
-            lftp -e "${LFTP_CONN}; mirror -R ./img/ /public_html/img/ --parallel=4 \
+            lftp -e "${LFTP_CONN}; mirror -R ./img/previews/ /public_html/img/previews/ --parallel=4 \
               --exclude-glob .DS_Store; bye"
           else
-            echo "==> No new images to sync, skipping img/ upload."
+            echo "==> No new previews to sync, skipping img/previews/ upload."
+          fi
+          # Pass 3: only sync chat-screenshots/ when new ones were added this run
+          if [[ "${{ steps.check_chat_screenshots.outputs.new }}" == "true" ]]; then
+            echo "==> Syncing new chat-screenshots..."
+            lftp -e "${LFTP_CONN}; mirror -R ./chat-screenshots/ /public_html/chat-screenshots/ --parallel=4 \
+              --exclude-glob .DS_Store; bye"
+          else
+            echo "==> No new chat-screenshots to sync, skipping upload."
           fi
           echo "==> Deploy complete."
