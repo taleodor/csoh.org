@@ -165,7 +165,7 @@ nav a:focus {
 /* Hero Section */
 .hero {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-    color: var(--white);
+    color: #ffffff;
     padding: 4rem 2rem;
     text-align: center;
 }
@@ -173,6 +173,7 @@ nav a:focus {
 .hero h2 {
     font-size: 2.5rem;
     margin-bottom: 1rem;
+    color: #ffffff;
 }
 
 .hero p {
@@ -180,6 +181,7 @@ nav a:focus {
     max-width: 800px;
     margin: 0 auto 2rem;
     opacity: 0.95;
+    color: #ffffff;
 }
 
 .cta-buttons {
