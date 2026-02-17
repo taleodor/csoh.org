@@ -54,9 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Hamburger menu toggle
     const hamburger = document.querySelector('.hamburger');
     if (hamburger) {
-        hamburger.addEventListener('click', function() {
-            const header = this.closest('.header-content');
-            const isOpen = header.classList.toggle('nav-open');
+        hamburger.addEventListener('click', function () {
+            const isOpen = document.body.classList.toggle('nav-open');
             this.setAttribute('aria-expanded', String(isOpen));
             this.textContent = isOpen ? '✕' : '☰';
         });

@@ -816,7 +816,6 @@ footer {
     .js-enabled nav {
         display: none;
     }
-    .js-enabled.nav-open nav,
     .js-enabled .nav-open nav {
         display: block;
     }
