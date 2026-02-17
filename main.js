@@ -109,6 +109,29 @@ document.addEventListener('DOMContentLoaded', function() {
             filterResources(query.toLowerCase());
         }
 
+        // Support ?category= URL parameter for deep-linking from footer/nav
+        const categoryParam = params.get('category');
+        if (categoryParam && !query) {
+            const btn = document.querySelector(`button[data-category="${CSS.escape(categoryParam)}"]`);
+            if (btn) {
+                document.querySelectorAll('button[data-category]').forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-pressed', 'false');
+                });
+                btn.classList.add('active');
+                btn.setAttribute('aria-pressed', 'true');
+                if (categoryParam === 'all') {
+                    document.querySelectorAll('.resource-card').forEach(card => {
+                        getToggleTarget(card).style.display = '';
+                    });
+                } else if (categoryParam === 'new') {
+                    filterByTagText('new');
+                } else {
+                    filterByTagText(categoryParam);
+                }
+            }
+        }
+
         const debouncedSearch = debounce(function(e) {
             const searchTerm = e.target.value.toLowerCase();
             filterResources(searchTerm);
