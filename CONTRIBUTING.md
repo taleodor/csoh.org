@@ -138,6 +138,8 @@ For other contributions, continue reading the guide below.
 - Why it's important
 - What the new version should say/look like
 
+> **Tip:** The site supports dark mode. If your change involves colors, backgrounds, or borders, test it in both light and dark mode (use the 🌙 toggle in the header).
+
 **How to contribute:** [See "Editing Content" below](#editing-content--descriptions)
 
 ---
@@ -526,6 +528,7 @@ Before you submit, make sure:
 - ✅ **Spelling/grammar is correct** - Your PR text is well-written
 - ✅ **Links work** - Test any URLs you're adding
 - ✅ **Formatting looks right** - Check HTML looks correct
+- ✅ **Light & dark mode** - Verify your changes look good in both themes (use the 🌙 toggle)
 - ✅ **Commit message is helpful** - Clearly describe what you did
 - ✅ **You're not changing too much** - Keep each PR focused on one thing
 

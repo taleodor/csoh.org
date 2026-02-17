@@ -215,6 +215,8 @@ Preview images are the small screenshot shown for each resource. They're optiona
 - `<span class="tag job">` = Job Search (pink)
 - `<span class="tag">` = Regular tag (gray)
 
+> **Note:** All tag colors automatically adapt to dark mode — you don't need to add any dark mode–specific styles.
+
 **Don't worry about images yet!** The site will handle that automatically. If you want to add a custom preview image, [see Step 5](#step-5-add-a-preview-image-optional).
 
 ### Step 5: Add a Preview Image (Optional)

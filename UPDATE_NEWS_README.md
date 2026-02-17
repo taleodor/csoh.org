@@ -2,14 +2,14 @@
 
 ## How Does the News Page Stay Up to Date?
 
-The [News page](https://csoh.org/news.html) is updated **automatically every 12 hours** — no one has to manually add articles. Here's how it works in plain English:
+The [News page](https://csoh.org/news.html) is updated **automatically every 12 hours** — no one has to manually add articles. The script also generates an **RSS feed** (`feed.xml`) so subscribers get updates automatically. Here's how it works in plain English:
 
 1. **GitHub Actions** (a free automation service built into GitHub) runs a Python script on a schedule — twice a day, at midnight and noon UTC.
 2. The script visits **22 cloud security news sources** and checks for new articles using something called **RSS feeds**. An RSS feed is like a news wire — it's a machine-readable list of recent articles that a website publishes so other tools can easily pull in headlines, dates, and summaries.
 3. The script filters those articles for **cloud security topics** (looking for keywords like "AWS", "Azure", "Kubernetes", "vulnerability", "breach", etc.) and throws out duplicates.
-4. It then updates `news.html` with fresh article cards — title, date, summary, source name, and a link to the original article.
+4. It then updates `news.html` with fresh article cards — title, date, summary, source name, and a link to the original article. It also regenerates `feed.xml` (the RSS feed) with the latest articles.
 5. Instead of pushing changes directly, it **creates a Pull Request** (a proposed change) so a maintainer can review it before it goes live.
-6. If the only file changed is `news.html`, the PR is **automatically merged** — no human review needed for routine news updates.
+6. If the only files changed are `news.html` and `feed.xml`, the PR is **automatically merged** — no human review needed for routine news updates.
 7. Once merged, the **Deploy workflow** automatically uploads the updated site to the web server via FTP.
 
 **The end result:** the News page always has fresh, relevant cloud security articles without anyone lifting a finger.
@@ -73,7 +73,7 @@ Schedule (every 12 hours) or manual trigger
   Check out the latest code from the repo
         |
         v
-  Run update_news.py (fetch feeds, filter, update news.html)
+  Run update_news.py (fetch feeds, filter, update news.html + feed.xml)
         |
         v
   Any changes?
@@ -83,7 +83,7 @@ Schedule (every 12 hours) or manual trigger
   Done    Create a Pull Request
               |
               v
-         Only news.html changed?
+         Only news.html + feed.xml changed?
           /         \
         Yes          No
          |            |

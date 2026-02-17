@@ -61,7 +61,7 @@ You never have to manually update fingerprints or worry about visitors seeing st
 
 ## The Script: `update_sri.py`
 
-This Python script does all the work. When run, it:
+This Python script does all the work. Note that `style.css` includes a large dark mode section (~500 lines of overrides), so any changes to dark mode styling will trigger SRI hash recalculation. When run, the script:
 
 1. Reads `style.css` and `main.js` from the repo
 2. Calculates a **SHA-384 hash** (the fingerprint) for each file
