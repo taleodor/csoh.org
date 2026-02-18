@@ -60,7 +60,7 @@ jobs:
         id: check_previews
         run: |
           python3 tools/generate_preview.py --check > preview-check.txt || true
-          if grep -q "resources without previews" preview-check.txt; then
+          if grep -q "Found.*resources without previews" preview-check.txt; then
             echo "missing=true" >> $GITHUB_OUTPUT
             echo "Found resources without previews"
           else
