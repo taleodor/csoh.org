@@ -114,7 +114,7 @@ SRI and cache-busting are handled as part of the unified workflow, not a separat
 2. Runs `python3 update_sri.py` to recalculate SRI hashes and `?v=` cache-busting params
 3. Commits and pushes updated HTML files if hashes changed
 4. Generates preview images for any new resources in `resources.html`
-5. Deploys the site via rsync over SSH in smart passes:
+5. Deploys the site via FTP in smart passes:
    - **Pass 1:** Always — all HTML/CSS/JS and site files (skips image directories)
    - **Pass 2:** Only when new previews were generated — uploads `img/previews/`
    - **Pass 3:** Only when new files exist in `chat-screenshots/` — uploads `chat-screenshots/`
@@ -152,9 +152,9 @@ The workflow requires the following secrets under **Settings > Secrets and varia
 |--------|---------|
 | `PAT_TOKEN` | Fine-grained PAT for committing SRI/preview changes and managing PRs |
 | `APPROVAL_PAT_TOKEN` | Separate PAT used to auto-approve news PRs (must be a different user) |
-| `FTP_HOST` | SSH/SFTP hostname of the web server |
-| `FTP_USER` | SSH username on the web server |
-| `SSH_PRIVATE_KEY` | Ed25519 private key used for passwordless SSH deployment |
+| `FTP_HOST` | FTP hostname of the web server |
+| `FTP_USER` | FTP username on the web server |
+| `FTP_PASS` | FTP password for the web server |
 
 ### Setting up `PAT_TOKEN`
 
@@ -163,19 +163,14 @@ The workflow requires the following secrets under **Settings > Secrets and varia
 3. Give it **Contents** (read/write) and **Pull requests** (read/write) permissions
 4. Save it as `PAT_TOKEN` in repo secrets
 
-### Setting up the SSH deploy key (`SSH_PRIVATE_KEY`)
+### Setting up the FTP credentials
 
-The workflow deploys via rsync over SSH using a dedicated ed25519 key pair — no FTP password involved.
+The workflow deploys via FTPS (FTP over TLS) using lftp.
 
-To rotate or set up from scratch:
-
-1. Generate a new key pair locally:
-   ```bash
-   ssh-keygen -t ed25519 -C "github-actions@csoh.org" -f ./deploy_key -N ""
-   ```
-2. Add the **public key** (`deploy_key.pub`) to `~/.ssh/authorized_keys` on the web server (via hosting control panel → SSH Keys)
-3. Add the **private key** (`deploy_key` contents) as the `SSH_PRIVATE_KEY` repo secret
-4. Delete both key files from your local machine
+1. Set `FTP_HOST` to your web server's FTP hostname
+2. Set `FTP_USER` to the FTP username
+3. Set `FTP_PASS` to the FTP password
+4. All three should be saved as repository secrets under **Settings > Secrets and variables > Actions**
 
 ### Pinned GitHub Actions
 
