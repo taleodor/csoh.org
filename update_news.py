@@ -343,7 +343,9 @@ def replace_grid(html_text: str, cards_html: str) -> str:
 
 
 def update_date_modified(html_text: str, iso_date: str) -> str:
-    return re.sub(r'"dateModified"\s*:\s*"[^"]+"', f'"dateModified": "{iso_date}"', html_text, count=1)
+    html_text = re.sub(r'"dateModified"\s*:\s*"[^"]+"', f'"dateModified": "{iso_date}"', html_text, count=1)
+    html_text = re.sub(r'og:updated_time"\s+content="[^"]+"', f'og:updated_time" content="{iso_date}"', html_text, count=1)
+    return html_text
 
 
 def build_entries(news_path: str, resources_path: str, max_articles: int, min_sources: int) -> Tuple[List[Dict[str, str]], str]:
