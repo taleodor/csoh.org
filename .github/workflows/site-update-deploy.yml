@@ -12,6 +12,7 @@ on:
       - 'main.js'
       - 'chat-resources.js'
       - 'update_sri.py'
+      - '.htaccess'
   workflow_dispatch:
     inputs:
       full_deploy:
